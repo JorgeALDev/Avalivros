@@ -62,8 +62,7 @@ fun ListaLivrosScreen(viewModel: BuscaViewModel = viewModel()) {
 @Composable
 fun ItemLivro(livro: Livro) {
     Row(modifier = Modifier.padding(vertical = 8.dp)) {
-        // Usamos livro.cover_id porque foi assim que definimos no Modelo
-        val urlImagem = "https://covers.openlibrary.org/b/id/${livro.cover_id}-M.jpg"
+        val urlImagem = "https://covers.openlibrary.org/b/id/${livro.cover_i}-M.jpg"
 
         AsyncImage(
             model = urlImagem,
@@ -74,7 +73,6 @@ fun ItemLivro(livro: Livro) {
         Spacer(modifier = Modifier.width(16.dp))
 
         Column {
-            // Acessando as propriedades que vieram do JSON
             Text(text = livro.title, fontWeight = FontWeight.Bold)
 
             livro.author_name?.let { listaAutores ->

@@ -20,11 +20,10 @@ class BuscaViewModel : ViewModel() {
 
     // Estado interno (privado)
     private val estado_tela = MutableStateFlow<UiState>(UiState.Sucesso(emptyList()))
-    // Estado exposto para a tela observar (público)
     val estadoTela: StateFlow<UiState> = estado_tela
 
     fun pesquisarLivros(texto: String) {
-        if (texto.isBlank()) return // Não faz nada se o texto estiver vazio
+        if (texto.isBlank()) return
 
         viewModelScope.launch {
             estado_tela.value = UiState.Carregando
