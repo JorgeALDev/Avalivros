@@ -20,9 +20,9 @@ fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
-    val context = LocalContext.current // Pega o contexto do Android
-    val coroutineScope = rememberCoroutineScope() // Para rodar funções 'suspend'
-    val authRepository = remember { AuthRepository(context) } // Instancia o repositório
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val authRepository = remember { AuthRepository(context) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -30,7 +30,6 @@ fun LoginScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Avalivros", style = MaterialTheme.typography.headlineLarge)
-
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
@@ -39,7 +38,6 @@ fun LoginScreen(navController: NavController) {
             label = { Text("E-mail") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
@@ -49,21 +47,13 @@ fun LoginScreen(navController: NavController) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             onClick = {
                 if (email.isNotBlank() && senha.isNotBlank()) {
-                    // Iniciamos a Coroutine para rodar em segundo plano
                     coroutineScope.launch {
-                        // 1. Simulamos que a API retornou um Token
-                        val tokenSimulado = "token_ficticio_${email}"
-
-                        // 2. Salvamos o Token no celular
-                        authRepository.salvarToken(tokenSimulado)
-
-                        // 3. Navegamos para a Lista de Livros
+                        authRepository.salvarToken("token_ficticio_$email")
                         navController.navigate("lista_livros") {
                             popUpTo("login") { inclusive = true }
                         }
@@ -81,15 +71,10 @@ fun LoginScreen(navController: NavController) {
     }
 }
 
-
-@Preview(showBackground = true) // showBackground pinta o fundo de branco para o preview
+@Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    // Usamos o seu tema para as cores ficarem iguais as do app
     AvalivrosTheme {
-        // Criamos um navController "falso" apenas para o Preview não dar erro
-        val navControllerFalso = rememberNavController()
-        // Chamamos a sua tela
-        LoginScreen(navController = navControllerFalso)
+        LoginScreen(navController = rememberNavController())
     }
 }

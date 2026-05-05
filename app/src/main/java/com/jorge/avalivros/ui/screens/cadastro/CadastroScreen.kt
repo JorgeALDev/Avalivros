@@ -21,7 +21,6 @@ fun CadastroScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Criar Conta", style = MaterialTheme.typography.headlineLarge)
-
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
@@ -30,7 +29,6 @@ fun CadastroScreen(navController: NavController) {
             label = { Text("Nome Completo") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
@@ -39,7 +37,6 @@ fun CadastroScreen(navController: NavController) {
             label = { Text("E-mail") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
@@ -49,15 +46,10 @@ fun CadastroScreen(navController: NavController) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = {
-                // No futuro, enviaria para a API de cadastro.
-                // Após o cadastro dar certo, voltamos para a tela de login:
-                navController.popBackStack()
-            },
+            onClick = { navController.popBackStack() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Cadastrar")

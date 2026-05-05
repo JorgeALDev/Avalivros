@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-// Estados que a tela pode assumir:
 sealed class UiState {
     object Carregando : UiState()
     data class Sucesso(val listaDeLivros: List<Livro>) : UiState()
@@ -16,24 +15,29 @@ sealed class UiState {
 }
 
 class BuscaViewModel : ViewModel() {
+
     private val repository = LivroRepository()
 
-    // Estado interno (privado)
-    private val estado_tela = MutableStateFlow<UiState>(UiState.Sucesso(emptyList()))
-    val estadoTela: StateFlow<UiState> = estado_tela
+    private val _estadoTela = MutableStateFlow<UiState>(UiState.Sucesso(emptyList()))
+    val estadoTela: StateFlow<UiState> = _estadoTela
+
+    private val _livroSelecionado = MutableStateFlow<Livro?>(null)
+    val livroSelecionado: StateFlow<Livro?> = _livroSelecionado
 
     fun pesquisarLivros(texto: String) {
         if (texto.isBlank()) return
-
         viewModelScope.launch {
-            estado_tela.value = UiState.Carregando
-
+            _estadoTela.value = UiState.Carregando
             try {
                 val livros = repository.buscarLivros(texto)
-                estado_tela.value = UiState.Sucesso(livros)
+                _estadoTela.value = UiState.Sucesso(livros)
             } catch (e: Exception) {
-                estado_tela.value = UiState.Erro("Falha ao buscar os livros. Verifique sua conexão.")
+                _estadoTela.value = UiState.Erro("Falha ao buscar os livros. Verifique sua conexão.")
             }
         }
+    }
+
+    fun selecionarLivro(livro: Livro) {
+        _livroSelecionado.value = livro
     }
 }
