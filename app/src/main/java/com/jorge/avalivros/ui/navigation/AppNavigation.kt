@@ -6,7 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jorge.avalivros.ui.screens.CadastroScreen
+import com.jorge.avalivros.ui.screens.avaliacao.AvaliacaoScreen
+import com.jorge.avalivros.ui.screens.cadastro.CadastroScreen
 import com.jorge.avalivros.ui.screens.detalhe.DetalhesLivroScreen
 import com.jorge.avalivros.ui.screens.listaLivros.ListaLivrosScreen
 import com.jorge.avalivros.ui.screens.login.LoginScreen
@@ -31,6 +32,10 @@ fun AppNavigation() {
         ) { backStackEntry ->
             val livroKey = backStackEntry.arguments?.getString("livroKey") ?: return@composable
             DetalhesLivroScreen(navController = navController, livroKey = livroKey)
+        }
+        composable("avaliacao/{livroKey}") { backStackEntry ->
+            val livroKey = backStackEntry.arguments?.getString("livroKey") ?: return@composable
+            AvaliacaoScreen(navController, livroKey)
         }
     }
 }

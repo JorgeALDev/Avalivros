@@ -6,7 +6,7 @@ import com.jorge.avalivros.data.model.Livro
 
 class DetalhesViewModelFactory(
     private val livroKey: String,
-    private val livroBase: Livro? = null
+    private val livroBase: Livro?
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

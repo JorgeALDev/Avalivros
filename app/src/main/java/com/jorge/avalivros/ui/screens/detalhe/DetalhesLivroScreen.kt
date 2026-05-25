@@ -1,8 +1,8 @@
 package com.jorge.avalivros.ui.screens.detalhe
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -72,70 +72,111 @@ fun DetalhesLivroScreen(
             }
             is DetalhesUiState.Sucesso -> {
                 val livro = (estado as DetalhesUiState.Sucesso).livro
-                Column(
+                val avaliacoes = (estado as DetalhesUiState.Sucesso).avaliacoes
+
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (livro.cover_i != null) {
-                        AsyncImage(
-                            model = "https://covers.openlibrary.org/b/id/${livro.cover_i}-M.jpg",
-                            contentDescription = "Capa de ${livro.title}",
-                            modifier = Modifier.size(200.dp)
-                        )
-                    } else {
-                        Box(
-                            modifier = Modifier.size(200.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Sem imagem", color = Color.Gray)
+                    item {
+                        if (livro.cover_i != null) {
+                            AsyncImage(
+                                model = "https://covers.openlibrary.org/b/id/${livro.cover_i}-M.jpg",
+                                contentDescription = "Capa de ${livro.title}",
+                                modifier = Modifier.size(200.dp)
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier.size(200.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Sem imagem", color = Color.Gray)
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = livro.title,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    livro.author_name?.let {
-                        Text(text = "Autor(es): ${it.joinToString()}")
-                    }
-                    livro.first_publish_year?.let {
-                        Text(text = "Ano de publicação: $it")
-                    }
-
-                    if (!livro.description.isNullOrBlank()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        HorizontalDivider()
-                        Spacer(modifier = Modifier.height(8.dp))
+                    item {
                         Text(
-                            text = "Sinopse",
+                            text = livro.title,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = livro.description.replace(Regex("\\[.*?]"), "").trim(),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    } else {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Sinopse não disponível.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray
+                            style = MaterialTheme.typography.headlineSmall
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    livro.author_name?.let { autores ->
+                        item {
+                            Text(text = "Autor(es): ${autores.joinToString()}")
+                        }
+                    }
 
-                    Button(onClick = { /* TODO: AvaliacaoScreen */ }) {
-                        Text("Avaliar este livro")
+                    livro.first_publish_year?.let { ano ->
+                        item {
+                            Text(text = "Ano de publicação: $ano")
+                        }
+                    }
+
+                    item {
+                        if (!livro.description.isNullOrBlank()) {
+                            Column {
+                                Divider()
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Sinopse",
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = livro.description.replace(Regex("\\[.*?]"), "").trim(),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = "Sinopse não disponível.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+
+                    item {
+                        Button(
+                            onClick = {
+                                val keyLimpa = livro.key?.removePrefix("/works/")
+                                if (keyLimpa != null) {
+                                    navController.navigate("avaliacao/$keyLimpa")
+                                }
+                            }
+                        ) {
+                            Text("Avaliar este livro")
+                        }
+                    }
+
+                    if (avaliacoes.isNotEmpty()) {
+                        item {
+                            Divider()
+                            Text(
+                                text = "Avaliações (${avaliacoes.size})",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        items(avaliacoes) { avaliacao ->
+                            AvaliacaoItem(avaliacao)
+                        }
+                    } else {
+                        item {
+                            Text(
+                                text = "Nenhuma avaliação ainda. Seja o primeiro a avaliar!",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
             }

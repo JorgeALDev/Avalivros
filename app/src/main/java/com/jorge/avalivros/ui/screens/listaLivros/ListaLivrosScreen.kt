@@ -133,7 +133,7 @@ fun ListaLivrosScreen(navController: NavController) {
                                             navController.navigate("detalhes/$keyLimpa")
                                         }
                                     )
-                                    HorizontalDivider()
+                                    Divider()
                                 }
                             }
                         }
