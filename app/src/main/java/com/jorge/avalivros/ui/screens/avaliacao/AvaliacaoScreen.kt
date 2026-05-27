@@ -27,31 +27,26 @@ fun AvaliacaoScreen(
     navController: NavController,
     livroKey: String
 ) {
-    // 1. ViewModel – gerencia o estado e a lógica de envio
     val viewModel: AvaliacaoViewModel = viewModel(
         factory = AvaliacaoViewModelFactory(livroKey)
     )
-    val estado by viewModel.estado.collectAsState()  // observa mudanças de estado
+    val estado by viewModel.estado.collectAsState()
     val context = LocalContext.current
 
-    // 2. Estados locais da UI (nota e comentário)
     var nota by remember { mutableStateOf(0) }
     var comentario by remember { mutableStateOf("") }
 
-    // 3. Reage a mudanças de estado do ViewModel (sucesso/erro)
     LaunchedEffect(estado) {
         when (estado) {
             is AvaliacaoUiState.Sucesso -> {
                 Toast.makeText(context, "Avaliação enviada!", Toast.LENGTH_LONG).show()
-                navController.popBackStack()  // volta para tela de detalhes
+                navController.popBackStack()
                 viewModel.resetEstado()
             }
             is AvaliacaoUiState.Erro -> {
                 Toast.makeText(context, (estado as AvaliacaoUiState.Erro).mensagem, Toast.LENGTH_SHORT).show()
-                // erro já foi registrado; ViewModel continua em Pronto? Sim, reset será necessário?
-                // O ViewModel não reseta automaticamente; você pode adicionar um reset após erro se quiser.
             }
-            else -> { /* nenhuma ação para Pronto ou Enviando */ }
+            else -> { }
         }
     }
 

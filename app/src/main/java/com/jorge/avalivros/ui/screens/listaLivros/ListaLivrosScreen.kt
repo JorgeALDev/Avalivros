@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.jorge.avalivros.data.local.TokenManager
 import com.jorge.avalivros.data.model.Livro
-import com.jorge.avalivros.data.repository.AuthRepository
 import com.jorge.avalivros.ui.viewmodel.BuscaViewModel
 import com.jorge.avalivros.ui.viewmodel.UiState
 import kotlinx.coroutines.launch
@@ -29,9 +28,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListaLivrosScreen(navController: NavController) {
     val viewModel: BuscaViewModel = viewModel()
-
     val context = LocalContext.current
-    val authRepository = remember { AuthRepository(context) }
+    val tokenManager = remember { TokenManager(context) }
     val coroutineScope = rememberCoroutineScope()
 
     var textoPesquisa by remember { mutableStateOf("") }
@@ -47,7 +45,7 @@ fun ListaLivrosScreen(navController: NavController) {
                 actions = {
                     IconButton(onClick = {
                         coroutineScope.launch {
-                            authRepository.limparToken()
+                            tokenManager.limpar()
                             navController.navigate("login") {
                                 popUpTo("lista_livros") { inclusive = true }
                             }
